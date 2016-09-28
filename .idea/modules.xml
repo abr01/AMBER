@@ -4,6 +4,8 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/SoftwareTeamProject.iml" filepath="$PROJECT_DIR$/SoftwareTeamProject.iml" />
       <module fileurl="file://$PROJECT_DIR$/SoftwareTeamProjectGit.iml" filepath="$PROJECT_DIR$/SoftwareTeamProjectGit.iml" />
+      <module fileurl="file://$PROJECT_DIR$/TeamProject.iml" filepath="$PROJECT_DIR$/TeamProject.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
