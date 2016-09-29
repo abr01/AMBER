@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">SoftwareTeamProject</string>
+    <string name="txtSettings">Settings</string>
 </resources>
