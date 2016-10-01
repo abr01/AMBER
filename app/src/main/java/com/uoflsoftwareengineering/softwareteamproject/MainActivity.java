@@ -54,6 +54,7 @@ public class MainActivity extends Activity
         });
     }
 
+
     private void sendSMS(String phoneNumber, String message)
     {
         String SENT = "SMS_SENT";

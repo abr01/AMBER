@@ -1,24 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    >
+    android:useDefaultMargins="true"
+    android:columnCount="33"
+    android:rowCount="186">
+
+    <Button
+        android:id="@+id/btnSendSMS"
+        android:layout_width="235dp"
+        android:layout_height="106dp"
+        android:text="@string/btEmergency"
+        android:background="@drawable/emergencybutton_rounded_corners"
+        android:textColor="#ffffff"
+        android:layout_gravity="center_vertical"
+        android:textSize="25sp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="70dp"
+        android:clickable="false" />
+
+    <TextView
+        android:layout_width="132dp"
+        android:layout_height="45dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/mainTitle"
+        android:id="@+id/textView"
+        android:gravity="center"
+        android:textColor="@color/colorAccent"
+        android:textSize="40sp"
+        android:textIsSelectable="true"
+        android:layout_alignBottom="@+id/imgBtnSettings"
+        android:layout_centerHorizontal="true" />
 
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/imgBtnSettings"
+        android:src="@android:drawable/ic_input_add"
+        android:contentDescription="@string/viewemergencycontacts"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:src="@drawable/gear" />
+        android:layout_toEndOf="@+id/btnSendSMS"
+        android:layout_toRightOf="@+id/btnSendSMS" />
 
-    <Button
-        android:id="@+id/btnSendSMS"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Send SMS"
-        />
-</LinearLayout>
+</RelativeLayout>
 

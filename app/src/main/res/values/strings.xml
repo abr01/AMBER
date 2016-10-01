@@ -1,4 +1,12 @@
 <resources>
     <string name="app_name">SoftwareTeamProject</string>
-    <string name="txtSettings">Settings</string>
+
+    <string name="btEmergency">Emergency</string>
+    <string name="viewemergencycontacts">ViewEmergencyContacts</string>
+    <string name="mainTitle">Amber</string>
+    <string name="btnBackDescrtiption">Back Button</string>
+    <string name="btnAddContactDescription">Add Contact</string>
+    <string name="txtContactTitle">Contacts</string>
+    <string name="txtAddContactDescription">Add Contact</string>
+    <string name="contactAddName">Name</string>
 </resources>
