@@ -1,6 +1,5 @@
 <resources>
-    <string name="app_name">SoftwareTeamProject</string>
-
+    <string name="app_name">AMBER</string>
     <string name="btEmergency">Emergency</string>
     <string name="viewemergencycontacts">ViewEmergencyContacts</string>
     <string name="mainTitle">Amber</string>
@@ -9,4 +8,5 @@
     <string name="txtContactTitle">Contacts</string>
     <string name="txtAddContactDescription">Add Contact</string>
     <string name="contactAddName">Name</string>
+    <string name="btnManageContacts">Contacts</string>
 </resources>

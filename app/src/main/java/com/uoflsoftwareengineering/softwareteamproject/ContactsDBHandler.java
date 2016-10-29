@@ -65,6 +65,16 @@ public class ContactsDBHandler extends SQLiteOpenHelper {
         db.execSQL("DELETE FROM product where _Name = 'eric'");
     }
 
+    public Cursor getContactCursor()
+    {
+        SQLiteDatabase db = getWritableDatabase();
+        String query = "SELECT * FROM " + TABLE_CONTACTS + ";";
+
+        //Cursor points to a location in your results
+        Cursor contactCursor= db.rawQuery(query, null);
+        return contactCursor;
+
+    }
     //Print out the table as a string
     public String databaseToString(){
         String dbString = "";

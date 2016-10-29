@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -65,6 +66,8 @@ public class SettingsActivity extends Activity {
                 alertDialogBuilder.setView(addContactsView);
                 final EditText txtContactName = (EditText) addContactsView.findViewById(R.id.contactAddName);
                 final EditText txtContactPhoneNumber = (EditText) addContactsView.findViewById(R.id.contactAddPhoneNumber);
+                txtContactPhoneNumber.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
+
 
                 alertDialogBuilder
                         .setCancelable(false)
@@ -77,10 +80,27 @@ public class SettingsActivity extends Activity {
                                         //ContactPhoneNumber = (EditText) findViewById(R.id.contactAddPhoneNumber);
                                         Name = txtContactName.getText().toString();
                                         Number = txtContactPhoneNumber.getText().toString();
-                                        contact = new Contacts(Name,Number);
-                                        dbHandler.addContact(contact);
-                                        printDatabase();
 
+                                        if(Name.length() >= 1 && Number.length() == 14) {
+
+                                            contact = new Contacts(Name, Number);
+                                            dbHandler.addContact(contact);
+                                            printDatabase();
+                                        }
+
+                                        else
+                                        {
+                                            new AlertDialog.Builder(context)
+                                                    .setTitle("Invalid Input")
+                                                    .setMessage("Name must be at least one letter and phone number must be 10 digits long.")
+                                                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                                        public void onClick(DialogInterface dialog, int which) {
+                                                            // continue with delete
+                                                        }
+                                                    })
+                                                    .setIcon(android.R.drawable.ic_dialog_alert)
+                                                    .show();
+                                        }
                                     }
 
                                 })

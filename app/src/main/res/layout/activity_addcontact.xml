@@ -4,18 +4,19 @@
     android:layout_height="match_parent">
 
     <EditText
+        android:hint="Name"
         android:layout_width="181dp"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
-        android:text="@string/contactAddName"
         android:ems="10"
         android:id="@+id/contactAddName"
         android:layout_gravity="center_horizontal" />
 
     <EditText
+        android:hint="Phone Number"
         android:layout_width="179dp"
         android:layout_height="wrap_content"
-        android:inputType="phone"
+        android:inputType="phone|text"
         android:ems="10"
         android:id="@+id/contactAddPhoneNumber"
         android:layout_gravity="center_horizontal" />
