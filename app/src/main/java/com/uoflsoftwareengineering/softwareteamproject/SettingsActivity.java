@@ -9,17 +9,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
-
+import android.support.v7.app.AppCompatActivity;
 
 
 /**
  * Created by Tylor on 9/18/2016.
  */
-public class SettingsActivity extends Activity {
+public class SettingsActivity extends AppCompatActivity {
 
     private final Context context = this;
     private TextView txtContactList;
@@ -32,6 +33,13 @@ public class SettingsActivity extends Activity {
 
 
     @Override
+
+    public boolean onCreateOptionsMenu(Menu menu){
+        //inflate menu
+        getMenuInflater().inflate(R.menu.actionbar_menu, menu);
+        return true;
+    }
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
