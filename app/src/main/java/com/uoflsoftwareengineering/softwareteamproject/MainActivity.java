@@ -19,6 +19,14 @@ import android.widget.Toast;
 import java.util.Timer;
 import java.util.TimerTask;
 
+//Added from Alex
+import android.graphics.Point;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.PopupMenu;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+
 
 public class MainActivity extends Activity implements LocationListener
 {
@@ -51,6 +59,32 @@ public class MainActivity extends Activity implements LocationListener
 
     /** Called when the activity is first created. */
     @Override
+
+    public boolean onCreateOptionsMenu(Menu menu){
+    //inflate menu
+     getMenuInflater().inflate(R.menu.actionbar_menu, menu);
+        return true;
+    }
+
+
+    public boolean onOptionsItemSelected (MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.control:
+                return true;
+            case R.id.addContact:
+                Intent myIntent = new Intent(MainActivity.this,SettingsActivity.class);
+                MainActivity.this.startActivity(myIntent);
+                return true;
+            case R.id.about:
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+
+        }
+
+    }
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
