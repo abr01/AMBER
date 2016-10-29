@@ -28,7 +28,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 
-public class MainActivity extends Activity implements LocationListener
+public class MainActivity extends AppCompatActivity implements LocationListener
 {
 
     //btnSendSMS will be the emergency button
