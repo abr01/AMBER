@@ -28,7 +28,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 
-public class MainActivity extends Activity implements LocationListener
+public class MainActivity extends AppCompatActivity implements LocationListener
 {
 
     //btnSendSMS will be the emergency button
@@ -96,7 +96,7 @@ public class MainActivity extends Activity implements LocationListener
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,this);
 
         btnSendSMS = (Button) findViewById(R.id.btnSendSMS);
-        btnContacts = (Button) findViewById(R.id.btnContacts);
+       // btnContacts = (Button) findViewById(R.id.btnContacts);
         dbHandler = new ContactsDBHandler(this,null,null,1);
         contactCursor = dbHandler.getContactCursor();
         contactCursor.moveToFirst();
@@ -130,7 +130,7 @@ public class MainActivity extends Activity implements LocationListener
 
         });
 
-        btnContacts.setOnClickListener(new View.OnClickListener()
+       /* btnContacts.setOnClickListener(new View.OnClickListener()
         {
             public void onClick(View v)
             {
@@ -138,7 +138,7 @@ public class MainActivity extends Activity implements LocationListener
                 );
                 MainActivity.this.startActivity(myIntent);
             }
-        });
+        });*/
     }
 
     public void prepareMessage()

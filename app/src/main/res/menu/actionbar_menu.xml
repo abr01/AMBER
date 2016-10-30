@@ -13,19 +13,18 @@
         android:title="@string/control"
         android:orderInCategory="1"
         app:showAsAction="never"
-        />
+        android:visible="false" />
     <item
         android:id="@+id/addContact"
         android:title="@string/txtAddContactDescription"
         android:orderInCategory="2"
-        app:showAsAction="never"
-        />
+        app:showAsAction="never" />
     <item
         android:id="@+id/about"
         android:title="@string/about"
         android:orderInCategory="3"
         app:showAsAction="never"
-        />
+        android:visible="true" />
     </group>
 
 </menu>
