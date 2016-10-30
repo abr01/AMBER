@@ -1,10 +1,12 @@
 package com.uoflsoftwareengineering.softwareteamproject;
 
+import android.support.v7.app.AppCompatActivity;
+
 /**
  * Created by Tylor on 9/30/2016.
  */
 
-public class Contacts {
+public class Contacts extends AppCompatActivity {
 
     private int _id;
     private String _name;

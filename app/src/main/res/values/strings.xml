@@ -12,4 +12,6 @@
     <string name="menu_settings">Settings</string>
     <string name="control">Parental Controls</string>
     <string name="about">About</string>
+    <string name="Edit">Edit</string>
+    <string name="Delete">Delete</string>
 </resources>

@@ -6,20 +6,30 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v7.internal.widget.AdapterViewCompat;
 import android.telephony.PhoneNumberFormattingTextWatcher;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+import android.support.v7.app.AppCompatActivity;
 
+import java.util.List;
 
 
 /**
  * Created by Tylor on 9/18/2016.
  */
-public class SettingsActivity extends Activity {
+public class SettingsActivity extends AppCompatActivity {
 
     private final Context context = this;
     private TextView txtContactList;
@@ -32,6 +42,35 @@ public class SettingsActivity extends Activity {
 
 
     @Override
+
+
+    public void onCreateContextMenu(ContextMenu cmenu, View v,
+                                    ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(cmenu, v, menuInfo);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.context_menu, cmenu);
+    }
+
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterViewCompat.AdapterContextMenuInfo info = (AdapterViewCompat.AdapterContextMenuInfo) item.getMenuInfo();
+        switch (item.getItemId()) {
+            case R.id.Edit:
+
+                return true;
+            case R.id.Delete:
+
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
+    }
+
+        public boolean onCreateOptionsMenu(Menu menu){
+        //inflate menu
+        getMenuInflater().inflate(R.menu.actionbar_menu, menu);
+        return true;
+    }
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
@@ -119,9 +158,11 @@ public class SettingsActivity extends Activity {
 
     //Prints Database as a String
     public void printDatabase(){
-        txtContactList = (TextView) findViewById(R.id.txtContactList);
+        /*txtContactList = (ListView) findViewById(R.id.txtContactList);
+        ListView myView = (ListView) findViewById(R.id.txtContactList);
         String dbString = dbHandler.databaseToString();
-        txtContactList.setText(dbString);
+        txtContactList.setText(dbString);*/
+
 
     }
 

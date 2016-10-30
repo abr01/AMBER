@@ -24,30 +24,6 @@
         android:clickable="false"
         />
 
-    <TextView
-        android:layout_width="132dp"
-        android:layout_height="45dp"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/mainTitle"
-        android:id="@+id/textView"
-        android:gravity="center"
-        android:textColor="@color/colorAccent"
-        android:textSize="40sp"
-        android:textIsSelectable="true"
-        android:layout_centerHorizontal="true" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/btnManageContacts"
-        android:id="@+id/btnContacts"
-        android:background="@drawable/buttoncontactsredirect"
-        android:textColor="#ffffff"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        />
-
 
 </RelativeLayout>
 

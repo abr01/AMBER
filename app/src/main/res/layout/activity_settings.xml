@@ -2,7 +2,20 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent">
 
-    <TextView
+  <ListView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_below="@+id/imgBtnBack"
+      android:layout_centerHorizontal="true"
+      android:id="@+id/txtContactList"
+
+      >
+
+
+  </ListView>
+
+
+   <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
@@ -32,14 +45,5 @@
         android:src="@android:drawable/ic_input_add"
         android:contentDescription="@string/txtAddContactDescription"
         android:focusableInTouchMode="false" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:id="@+id/txtContactList"
-        android:layout_below="@+id/txtContactTitle"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="37dp" />
 
 </RelativeLayout>
