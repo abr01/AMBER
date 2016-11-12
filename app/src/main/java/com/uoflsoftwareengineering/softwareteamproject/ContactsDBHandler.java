@@ -15,7 +15,7 @@ public class ContactsDBHandler extends SQLiteOpenHelper {
 
 
     public static final int DATABASE_VERSION = 1;
-    public static final String DATABASE_NAME = "Contacts.db";
+    public static final String DATABASE_NAME = "AmberDB.db";
     public static final String TABLE_CONTACTS = "Contacts";
     public static final String COLUMN_ID = "_ID";
     public static final String COLUMN_CONTACTNAME = "_Name";
@@ -26,6 +26,7 @@ public class ContactsDBHandler extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, factory, DATABASE_VERSION);
     }
 
+    //Create the database  tables
     @Override
     public void onCreate(SQLiteDatabase db) {
 
@@ -40,6 +41,7 @@ public class ContactsDBHandler extends SQLiteOpenHelper {
         db.execSQL(query);
     }
 
+    //In case of database upgrade, drop all tables
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
@@ -65,6 +67,7 @@ public class ContactsDBHandler extends SQLiteOpenHelper {
         db.execSQL("DELETE FROM product where _Name = 'eric'");
     }
 
+    //Get the table Contacts and return the table in a Curosr variable
     public Cursor getContactCursor()
     {
         SQLiteDatabase db = getWritableDatabase();

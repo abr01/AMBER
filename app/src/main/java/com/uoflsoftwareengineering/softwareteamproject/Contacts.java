@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 
 public class Contacts extends AppCompatActivity {
 
+    //All Contacts have an id, name, and phone number
     private int _id;
     private String _name;
     private String _phoneNumber;

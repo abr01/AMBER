@@ -32,24 +32,24 @@ import java.util.List;
 public class SettingsActivity extends AppCompatActivity {
 
     private final Context context = this;
-    private TextView txtContactList;
+    //private TextView txtContactList;
     private ContactsDBHandler dbHandler;
-    private EditText ContactName;
-    private EditText ContactPhoneNumber;
+    //private EditText ContactName;
+    //private EditText ContactPhoneNumber;
     private String Name;
     private String Number;
     private Contacts contact;
 
 
+    //ALEX'S CODE
     @Override
-
-
     public void onCreateContextMenu(ContextMenu cmenu, View v,
                                     ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(cmenu, v, menuInfo);
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.context_menu, cmenu);
     }
+
 
     public boolean onContextItemSelected(MenuItem item) {
         AdapterViewCompat.AdapterContextMenuInfo info = (AdapterViewCompat.AdapterContextMenuInfo) item.getMenuInfo();
@@ -75,15 +75,16 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        ImageButton btnSettings = (ImageButton) findViewById(R.id.imgBtnBack);
+        //Buttons to be used always on the page, other buttons will be built dynamically
+        ImageButton btnBack= (ImageButton) findViewById(R.id.imgBtnBack);
         ImageButton btnAddContact = (ImageButton) findViewById(R.id.imgBtnAddContact);
 
-
-
+        //Create ContactsDBHandler Object to use and display all of the contacts already stored in the database if any
         dbHandler = new ContactsDBHandler(this,null,null,1);
         printDatabase();
 
-        btnSettings.setOnClickListener(new View.OnClickListener(){
+        //Click  to go back to the MainActivity page
+        btnBack.setOnClickListener(new View.OnClickListener(){
 
             @Override
             public void onClick(View v) {
@@ -92,6 +93,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
+        //Click to add contact
         btnAddContact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -102,6 +104,8 @@ public class SettingsActivity extends AppCompatActivity {
 
                 li = LayoutInflater.from(context);
                 addContactsView = li.inflate(R.layout.activity_addcontact, null);
+
+                //Set a view to display to add a contact
                 alertDialogBuilder.setView(addContactsView);
                 final EditText txtContactName = (EditText) addContactsView.findViewById(R.id.contactAddName);
                 final EditText txtContactPhoneNumber = (EditText) addContactsView.findViewById(R.id.contactAddPhoneNumber);
@@ -111,20 +115,21 @@ public class SettingsActivity extends AppCompatActivity {
                 alertDialogBuilder
                         .setCancelable(false)
                         .setPositiveButton("Add Contact",
-                                new DialogInterface.OnClickListener(){
-
-                                    public void onClick(DialogInterface dialog,int id) {
-
+                                new DialogInterface.OnClickListener()
+                                {
+                                    public void onClick(DialogInterface dialog,int id)
+                                    {
                                         //ContactName = (EditText) findViewById(R.id.contactAddName);
                                         //ContactPhoneNumber = (EditText) findViewById(R.id.contactAddPhoneNumber);
                                         Name = txtContactName.getText().toString();
                                         Number = txtContactPhoneNumber.getText().toString();
 
-                                        if(Name.length() >= 1 && Number.length() == 14) {
-
+                                        //If there is valid input add the contact otherwise notify it wasn't valid and to try again
+                                        if(Name.length() >= 1 && Number.length() == 14)
+                                        {
                                             contact = new Contacts(Name, Number);
                                             dbHandler.addContact(contact);
-                                            printDatabase();
+                                            //printDatabase();
                                         }
 
                                         else
@@ -132,9 +137,11 @@ public class SettingsActivity extends AppCompatActivity {
                                             new AlertDialog.Builder(context)
                                                     .setTitle("Invalid Input")
                                                     .setMessage("Name must be at least one letter and phone number must be 10 digits long.")
-                                                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                                                        public void onClick(DialogInterface dialog, int which) {
-                                                            // continue with delete
+                                                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener()
+                                                    {
+                                                        public void onClick(DialogInterface dialog, int which)
+                                                        {
+
                                                         }
                                                     })
                                                     .setIcon(android.R.drawable.ic_dialog_alert)
@@ -143,9 +150,12 @@ public class SettingsActivity extends AppCompatActivity {
                                     }
 
                                 })
+                        //On cancel, close and go back to the SettingsActivity page
                         .setNegativeButton("Cancel",
-                                new DialogInterface.OnClickListener(){
-                                    public void onClick(DialogInterface dialog,int id) {
+                                new DialogInterface.OnClickListener()
+                                {
+                                    public void onClick(DialogInterface dialog,int id)
+                                    {
                                         dialog.cancel();
                                     }
                                 });
@@ -157,13 +167,11 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     //Prints Database as a String
-    public void printDatabase(){
+    public void printDatabase()
+    {
         /*txtContactList = (ListView) findViewById(R.id.txtContactList);
         ListView myView = (ListView) findViewById(R.id.txtContactList);
         String dbString = dbHandler.databaseToString();
         txtContactList.setText(dbString);*/
-
-
     }
-
 }
