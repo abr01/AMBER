@@ -1,3 +1,4 @@
+//Main project
 package com.uoflsoftwareengineering.softwareteamproject;
 
 //All References that are used in main activity are here
