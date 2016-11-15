@@ -3,9 +3,11 @@ package com.uoflsoftwareengineering.softwareteamproject;
 
 //All References that are used in main activity are here
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
@@ -14,8 +16,10 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.telephony.SmsManager;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -34,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener
 {
     //####Not all of these variables are needed at this level of the class, could be declared in the
     //####functions
-
+    private final Context context = this;
     //btnSendSMS will be the emergency button
     Button btnSendSMS;
     //####Get rid of button contacts once finalized
@@ -44,9 +48,16 @@ public class MainActivity extends AppCompatActivity implements LocationListener
     //dbHandler will be used to make calls to the database
     //contactCursor wiil be used to iterate through the list of contacts dbHandler returns
     //If there are no contacts aka rowCount = 0, the emergency button will gray out and disable
-    ContactsDBHandler dbHandler;
+    ContactsDBHandler contactDBHandler;
     Cursor contactCursor;
-    int rowCount;
+
+    boolean isPasswordSet;
+    String password1;
+    String password2;
+    String passwordCheck;
+    String storedPassword;
+
+    int contactCount;
     //locationManager will use the cell phones location information, latitude and longitude will be used
     //to send in message
     LocationManager locationManager;
@@ -58,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener
 
     //isInDanger initially set to false, user must click button to notify of danger
     //####isInDanve IS A TEMPORARY VARIABLE//
-    Boolean isInDanger = false;
+    int isInDanger;
 
     /** Called when the activity is first created. */
     //ALEX'S CODE
@@ -91,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Initialize the necessary components
+        //Initialize the necessary location components
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,this);
 
@@ -100,34 +111,54 @@ public class MainActivity extends AppCompatActivity implements LocationListener
        // btnContacts = (Button) findViewById(R.id.btnContacts);
 
         //dbHandler creates an instance of the object ContactsDBHandler
-        dbHandler = new ContactsDBHandler(this,null,null,1);
+        contactDBHandler = new ContactsDBHandler(this,null,null,1);
         //dbHandler.getContactCursor gets all of the contacts stored within a database
-        contactCursor = dbHandler.getContactCursor();
+        contactCursor = contactDBHandler.getContactCursor();
         //contactCursor.moveToFirst();
-        rowCount = contactCursor.getCount();
+        contactCount= contactCursor.getCount();
 
-        if(rowCount == 0)
+        if(contactCount == 0)
         {
             btnSendSMS.setEnabled(false);
+        }
+
+        isPasswordSet = contactDBHandler.isPasswordSet();
+
+        //If the password is not set, set it here
+        if(!isPasswordSet)
+        {
+            setPassword();
+        }
+
+        isInDanger = contactDBHandler.isInDanger();
+        if (isInDanger == 0)
+        {
+            btnSendSMS.setText("EMERGENCY");
+            btnSendSMS.setBackgroundResource(R.drawable.emergencybutton_rounded_corners);
+        }
+        //If the user clicks "End Emergency Messaging", end the emergency messaging
+        else
+        {
+            btnSendSMS.setBackgroundResource(R.drawable.emergencybuttonend_rounded_corners);
+            btnSendSMS.setText("End Emergency Messaging");
+            resume();
         }
 
         //Function that tells the button btnSendSMS what to do onClick
         btnSendSMS.setOnClickListener(new View.OnClickListener()
         {
-
             public void onClick(View v) {
 
+                isInDanger = contactDBHandler.isInDanger();
                 //If the user clicks "EMERGENCY", notify the user that the message is being relayed
-                if (isInDanger) {
-                    isInDanger = false;
-                    btnSendSMS.setText("EMERGENCY");
-                    btnSendSMS.setBackgroundResource(R.drawable.emergencybutton_rounded_corners);
-                    pause();
+                if (isInDanger == 1)
+                {
+                    checkPassword();
                 }
                 //If the user clicks "End Emergency Messaging", end the emergency messaging
                 else
                 {
-                    isInDanger = true;
+                    contactDBHandler.updateUserStatus(isInDanger);
                     btnSendSMS.setBackgroundResource(R.drawable.emergencybuttonend_rounded_corners);
                     btnSendSMS.setText("End Emergency Messaging");
                     //Send emergency message with updated location minute by minute
@@ -136,16 +167,118 @@ public class MainActivity extends AppCompatActivity implements LocationListener
             }
 
         });
+    }
 
-       /* btnContacts.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                Intent myIntent = new Intent(MainActivity.this,SettingsActivity.class
-                );
-                MainActivity.this.startActivity(myIntent);
-            }
-        });*/
+    public void setPassword()
+    {
+        LayoutInflater li;
+        View createPasswordView;
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+
+        li = LayoutInflater.from(context);
+        createPasswordView= li.inflate(R.layout.activity_createpassword, null);
+
+        //Set a view to display to add a contact
+        alertDialogBuilder.setView(createPasswordView);
+        final EditText Password1 = (EditText) createPasswordView.findViewById(R.id.password1);
+        final EditText Password2 = (EditText) createPasswordView.findViewById(R.id.password2);
+
+        alertDialogBuilder
+                .setCancelable(false)
+                .setPositiveButton("Create Password",
+                        new DialogInterface.OnClickListener()
+                        {
+                            public void onClick(DialogInterface dialog,int id)
+                            {
+                                //ContactName = (EditText) findViewById(R.id.contactAddName);
+                                //ContactPhoneNumber = (EditText) findViewById(R.id.contactAddPhoneNumber);
+                                password1 = Password1.getText().toString();
+                                password2 = Password2.getText().toString();
+
+                                //If there is valid input add the contact otherwise notify it wasn't valid and to try again
+                                if(password1.equals(password2) && password1.length() > 0)
+                                {
+                                    contactDBHandler.addPassword(password1);
+                                }
+
+                                else
+                                {
+                                    new AlertDialog.Builder(context)
+                                            .setTitle("Invalid Input")
+                                            .setMessage("The two passwords you entered were not equal. Password Creation Failed")
+                                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener()
+                                            {
+                                                public void onClick(DialogInterface dialog, int which)
+                                                {
+                                                    setPassword();
+                                                }
+                                            })
+                                            .setIcon(android.R.drawable.ic_dialog_alert)
+                                            .show();
+                                }
+                            }
+
+                        });
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
+
+    public void checkPassword()
+    {
+        LayoutInflater li;
+        View confirmPasswordView;
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+
+        li = LayoutInflater.from(context);
+        confirmPasswordView= li.inflate(R.layout.activity_confirmpassword, null);
+
+        //Set a view to display to add a contact
+        alertDialogBuilder.setView(confirmPasswordView);
+        final EditText passwordConfirmation = (EditText) confirmPasswordView.findViewById(R.id.passwordConfirmation);
+
+        alertDialogBuilder
+                .setCancelable(false)
+                .setPositiveButton("Confirm Password",
+                        new DialogInterface.OnClickListener()
+                        {
+                            public void onClick(DialogInterface dialog,int id)
+                            {
+                                //ContactName = (EditText) findViewById(R.id.contactAddName);
+                                //ContactPhoneNumber = (EditText) findViewById(R.id.contactAddPhoneNumber);
+                                passwordCheck = passwordConfirmation.getText().toString();
+                                storedPassword = contactDBHandler.getPassword();
+                                //If there is valid input add the contact otherwise notify it wasn't valid and to try again
+                                if(passwordCheck.equals(storedPassword))
+                                {
+                                    contactDBHandler.updateUserStatus(1);
+                                    isInDanger = contactDBHandler.isInDanger();
+                                    btnSendSMS.setText("EMERGENCY");
+                                    btnSendSMS.setBackgroundResource(R.drawable.emergencybutton_rounded_corners);
+                                    pause();
+                                }
+
+                                else
+                                {
+                                    new AlertDialog.Builder(context)
+                                            .setTitle("Invalid Password")
+                                            .setMessage("The password you entered was invalid. Emergency messaging will continue")
+                                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener()
+                                            {
+                                                public void onClick(DialogInterface dialog, int which)
+                                                {
+
+                                                }
+                                            })
+                                            .setIcon(android.R.drawable.ic_dialog_alert)
+                                            .show();
+                                }
+                            }
+
+                        });
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
     }
 
     //This iterates through each of the contacts making sure that each user gets
@@ -176,9 +309,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener
                 }
                 contactCursor.moveToNext();
             }
-            //contactCursor.moveToFirst();
-            //Timer timing;
-
     }
 
     //This function will run the prepareMessage method every minute when called
