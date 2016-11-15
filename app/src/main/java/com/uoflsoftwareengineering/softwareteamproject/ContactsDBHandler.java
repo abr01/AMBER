@@ -18,9 +18,15 @@ public class ContactsDBHandler extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "AmberDB.db";
     public static final String TABLE_CONTACTS = "Contacts";
     public static final String COLUMN_ID = "_ID";
+
     public static final String COLUMN_CONTACTNAME = "_Name";
     public static final String COLUMN_CONTACTPHONENUMBER = "_PhoneNumber";
 
+    public static final String COLUMN_PASSWORD = "_Password";
+    public static final String TABLE_PASSWORD = "Password";
+
+    public static final String COLUMN_ISINDANGER = "_IsInDanger";
+    public static final String TABLE_USERSTATUS = "UserStatus";
 
     public ContactsDBHandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, DATABASE_NAME, factory, DATABASE_VERSION);
@@ -30,7 +36,7 @@ public class ContactsDBHandler extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        String query = "CREATE TABLE " + TABLE_CONTACTS +
+        String CreateContactTable = "CREATE TABLE " + TABLE_CONTACTS +
                 "("
                 + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + COLUMN_CONTACTNAME + " TEXT, "
@@ -38,7 +44,28 @@ public class ContactsDBHandler extends SQLiteOpenHelper {
                 +
                 ");";
 
-        db.execSQL(query);
+        String CreatePasswordTable = "CREATE TABLE " + TABLE_PASSWORD +
+                "("
+                + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + COLUMN_PASSWORD + " TEXT "
+                +
+                ");";
+
+        String CreateUserStatusTable = "CREATE TABLE " + TABLE_USERSTATUS +
+                "("
+                + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + COLUMN_ISINDANGER + " INTEGER "
+                +
+                ");";
+
+        db.execSQL(CreateContactTable);
+        db.execSQL(CreatePasswordTable);
+        db.execSQL(CreateUserStatusTable);
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_ISINDANGER, 0);
+        db.insert(TABLE_USERSTATUS, null, values);
+
     }
 
     //In case of database upgrade, drop all tables
@@ -46,6 +73,7 @@ public class ContactsDBHandler extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_CONTACTS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_PASSWORD);
         onCreate(db);
     }
 
@@ -103,4 +131,82 @@ public class ContactsDBHandler extends SQLiteOpenHelper {
         db.close();
         return dbString;
     }
+
+    //Create password for user
+    public void addPassword(String password){
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_PASSWORD, password);
+
+        SQLiteDatabase db = getWritableDatabase();
+        db.insert(TABLE_PASSWORD, null, values);
+        db.close();
+
+    }
+
+    //returns the password stored for the user
+    public boolean isPasswordSet()
+    {
+        SQLiteDatabase db = getWritableDatabase();
+        String query = "SELECT * FROM " + TABLE_PASSWORD + ";";
+
+        //Cursor points to a location in your results
+        Cursor passwordCursor= db.rawQuery(query, null);
+        if(passwordCursor.getCount() == 1)
+        {
+            return true;
+        }
+
+        else
+        {
+            return false;
+        }
+
+    }
+
+    public String getPassword()
+    {
+        String password;
+        SQLiteDatabase db = getWritableDatabase();
+        String query = "SELECT _Password FROM " + TABLE_PASSWORD + ";";
+        Cursor passwordCursor = db.rawQuery(query, null);
+
+        passwordCursor.moveToFirst();
+        password = passwordCursor.getString(passwordCursor.getColumnIndex("_Password"));
+
+        return password;
+    }
+
+    public int isInDanger()
+    {
+        int isIndanger;
+        SQLiteDatabase db = getWritableDatabase();
+        String query = "SELECT _IsInDanger FROM UserStatus";
+        Cursor userStatusCursor = db.rawQuery(query, null);
+
+        userStatusCursor.moveToFirst();
+        isIndanger = userStatusCursor.getInt(userStatusCursor.getColumnIndex("_IsInDanger"));
+
+        return isIndanger;
+    }
+
+    public void updateUserStatus(int currentStatus)
+    {
+        if(currentStatus == 0)
+        {
+            currentStatus = 1;
+        }
+
+        else
+        {
+            currentStatus = 0;
+        }
+
+        SQLiteDatabase db = getWritableDatabase();
+        String query = "UPDATE UserStatus ";
+        query += "SET _IsInDanger = " + currentStatus;
+
+        db.execSQL(query);
+    }
+
 }
