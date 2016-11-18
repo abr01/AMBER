@@ -88,11 +88,21 @@ public class ContactsDBHandler extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void editContact(int ContactID, String ContactName, String ContactNumber)
+    {
+        String WhereClause = "_ID = " + Integer.toString(ContactID);
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_CONTACTNAME, ContactName);
+        values.put(COLUMN_CONTACTPHONENUMBER, ContactNumber);
+        db.update(TABLE_CONTACTS, values, WhereClause, null);
+    }
+
     //Delete a product from the database
-    public void deleteProduct(String productName)
+    public void deleteContact(int ContactID)
     {
         SQLiteDatabase db = getWritableDatabase();
-        db.execSQL("DELETE FROM product where _Name = 'eric'");
+        db.execSQL("DELETE FROM Contacts where _ID = " + Integer.toString(ContactID));
     }
 
     //Get the table Contacts and return the table in a Curosr variable
@@ -105,31 +115,6 @@ public class ContactsDBHandler extends SQLiteOpenHelper {
         Cursor contactCursor= db.rawQuery(query, null);
         return contactCursor;
 
-    }
-    //Print out the table as a string
-    public String databaseToString(){
-        String dbString = "";
-        SQLiteDatabase db = getWritableDatabase();
-        String query = "SELECT * FROM " + TABLE_CONTACTS + ";";
-
-        //Cursor points to a location in your results
-        Cursor contactCursor= db.rawQuery(query, null);
-        //Move to the first row in your results
-        contactCursor.moveToFirst();
-
-        //Position after the last row means the end of the results
-        while (!contactCursor.isAfterLast()) {
-            // null could happen if we used our empty constructor
-            if (contactCursor.getString(contactCursor.getColumnIndex("_Name")) != null) {
-                dbString += contactCursor.getString(contactCursor.getColumnIndex("_Name"));
-                dbString += " ";
-                dbString += contactCursor.getString(contactCursor.getColumnIndex("_PhoneNumber"));
-                dbString += "\n";
-            }
-            contactCursor.moveToNext();
-        }
-        db.close();
-        return dbString;
     }
 
     //Create password for user

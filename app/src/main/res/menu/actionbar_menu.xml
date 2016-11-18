@@ -16,7 +16,7 @@
         android:visible="false" />
     <item
         android:id="@+id/addContact"
-        android:title="@string/txtAddContactDescription"
+        android:title="@string/txtManageContacts"
         android:orderInCategory="2"
         app:showAsAction="never" />
     <item

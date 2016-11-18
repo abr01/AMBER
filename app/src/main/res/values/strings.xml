@@ -6,7 +6,7 @@
     <string name="btnBackDescrtiption">Back Button</string>
     <string name="btnAddContactDescription">Add Contact</string>
     <string name="txtContactTitle">Contacts</string>
-    <string name="txtAddContactDescription">Add Contact</string>
+    <string name="txtManageContacts">Manage Contacts</string>
     <string name="contactAddName">Name</string>
     <string name="btnManageContacts">Contacts</string>
     <string name="menu_settings">Settings</string>
