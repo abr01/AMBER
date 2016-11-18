@@ -4,7 +4,7 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:text="Add Contact"
+        android:text="Edit Contact"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/textView" />
@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
         android:ems="10"
-        android:id="@+id/contactAddName"
+        android:id="@+id/contactEditName"
         android:layout_gravity="center_horizontal" />
 
     <EditText
@@ -24,6 +24,6 @@
         android:layout_height="wrap_content"
         android:inputType="phone|text"
         android:ems="10"
-        android:id="@+id/contactAddPhoneNumber"
+        android:id="@+id/contactEditPhoneNumber"
         android:layout_gravity="center_horizontal" />
 </LinearLayout>

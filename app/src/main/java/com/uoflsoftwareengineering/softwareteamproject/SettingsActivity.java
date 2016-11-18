@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.v7.internal.widget.AdapterViewCompat;
 import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.view.ContextMenu;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,10 +21,15 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.support.v7.app.AppCompatActivity;
 
 import java.util.List;
+
+import static android.R.drawable.ic_delete;
+import static android.R.drawable.ic_menu_edit;
 
 
 /**
@@ -39,6 +45,9 @@ public class SettingsActivity extends AppCompatActivity {
     private String Name;
     private String Number;
     private Contacts contact;
+
+    ContactsDBHandler contactDBHandler;
+    Cursor contactCursor;
 
 
     //ALEX'S CODE
@@ -81,7 +90,10 @@ public class SettingsActivity extends AppCompatActivity {
 
         //Create ContactsDBHandler Object to use and display all of the contacts already stored in the database if any
         dbHandler = new ContactsDBHandler(this,null,null,1);
-        printDatabase();
+
+        makeContactsTable();
+
+
 
         //Click  to go back to the MainActivity page
         btnBack.setOnClickListener(new View.OnClickListener(){
@@ -129,7 +141,7 @@ public class SettingsActivity extends AppCompatActivity {
                                         {
                                             contact = new Contacts(Name, Number);
                                             dbHandler.addContact(contact);
-                                            //printDatabase();
+                                            makeContactsTable();
                                         }
 
                                         else
@@ -166,12 +178,180 @@ public class SettingsActivity extends AppCompatActivity {
         });
     }
 
-    //Prints Database as a String
-    public void printDatabase()
+
+    public void makeContactsTable()
     {
-        /*txtContactList = (ListView) findViewById(R.id.txtContactList);
-        ListView myView = (ListView) findViewById(R.id.txtContactList);
-        String dbString = dbHandler.databaseToString();
-        txtContactList.setText(dbString);*/
+
+        TableLayout ContactTable = (TableLayout) findViewById(R.id.contactTable);
+        ContactTable.removeAllViews();
+
+        // ContactTable = null;
+        TableRow tRow = new TableRow(this);
+        TextView column1 = new TextView(this);
+        TextView column2 = new TextView(this);
+        column1.setText("Name     ");
+        column2.setText("Number");
+
+        ContactTable.addView(tRow);
+        tRow.addView(column1);
+        tRow.addView(column2);
+
+        contactDBHandler = new ContactsDBHandler(this, null, null, 1);
+        //dbHandler.getContactCursor gets all of the contacts stored within a database
+        contactCursor = contactDBHandler.getContactCursor();
+        contactCursor.moveToFirst();
+
+        for (int i = 0; i < contactCursor.getCount(); i++) {
+
+            final int ContactID;
+            final String ContactName;
+            final String ContactPhoneNumber;
+
+
+            ImageButton editButton = new ImageButton(this);
+            editButton.setBackgroundResource(ic_menu_edit);
+
+            ContactID = contactCursor.getInt(contactCursor.getColumnIndex("_ID"));
+            ContactName = contactCursor.getString(contactCursor.getColumnIndex("_Name"));
+            ContactPhoneNumber = contactCursor.getString(contactCursor.getColumnIndex("_PhoneNumber"));
+
+            editButton.setOnClickListener(new ImageButton.OnClickListener()
+            {
+                public void onClick(View v)
+                {
+                    editContact(ContactID,ContactName,ContactPhoneNumber);
+                }
+            });
+
+            ImageButton deleteButton = new ImageButton(this);
+            deleteButton.setBackgroundResource(ic_delete);
+            deleteButton.setOnClickListener(new ImageButton.OnClickListener()
+            {
+                public void onClick(View v)
+                {
+                    deleteContact(ContactID);
+                }
+            });
+
+            TableRow row = new TableRow(this);
+            TextView nameField = new TextView(this);
+            nameField.setText(contactCursor.getString(contactCursor.getColumnIndex("_Name")));
+
+            TextView phoneField = new TextView(this);
+            phoneField.setText(contactCursor.getString(contactCursor.getColumnIndex("_PhoneNumber")));
+
+            row.addView(nameField);
+            row.addView(phoneField);
+            row.addView(editButton);
+            row.addView(deleteButton);
+            ContactTable.addView(row);
+
+            contactCursor.moveToNext();
+        }
+    }
+
+    public void editContact(final int ContactID, String Name, String Number)
+    {
+        LayoutInflater li;
+        View editContactsView;
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+
+        li = LayoutInflater.from(context);
+        editContactsView = li.inflate(R.layout.activity_editcontact, null);
+
+        //Set a view to display to add a contact
+        alertDialogBuilder.setView(editContactsView);
+        final EditText txtContactName = (EditText) editContactsView.findViewById(R.id.contactEditName);
+        final EditText txtContactPhoneNumber = (EditText) editContactsView.findViewById(R.id.contactEditPhoneNumber);
+        txtContactPhoneNumber.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
+
+        txtContactName.setText(Name);
+        txtContactPhoneNumber.setText(Number);
+
+
+        alertDialogBuilder
+                .setCancelable(false)
+                .setPositiveButton("Edit Contact",
+                        new DialogInterface.OnClickListener()
+                        {
+                            public void onClick(DialogInterface dialog,int id)
+                            {
+                                //If there is valid input add the contact otherwise notify it wasn't valid and to try again
+                                if(txtContactName.getText().toString().length() >= 1 && txtContactPhoneNumber.getText().toString().length() == 14)
+                                {
+                                    contact = new Contacts(txtContactName.getText().toString(), txtContactPhoneNumber.getText().toString());
+                                    dbHandler.editContact(ContactID, txtContactName.getText().toString(), txtContactPhoneNumber.getText().toString());
+                                    makeContactsTable();
+                                }
+
+                                else
+                                {
+                                    new AlertDialog.Builder(context)
+                                            .setTitle("Invalid Input")
+                                            .setMessage("Name must be at least one letter and phone number must be 10 digits long.")
+                                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener()
+                                            {
+                                                public void onClick(DialogInterface dialog, int which)
+                                                {
+
+                                                }
+                                            })
+                                            .setIcon(android.R.drawable.ic_dialog_alert)
+                                            .show();
+                                }
+                            }
+
+                        })
+                //On cancel, close and go back to the SettingsActivity page
+                .setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener()
+                        {
+                            public void onClick(DialogInterface dialog,int id)
+                            {
+                                dialog.cancel();
+                            }
+                        });
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
+
+    public void deleteContact(final int ContactID)
+    {
+        LayoutInflater li;
+        View deleteContactsView;
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+
+        li = LayoutInflater.from(context);
+        deleteContactsView = li.inflate(R.layout.activity_deletecontact, null);
+
+        //Set a view to display to add a contact
+        alertDialogBuilder.setView(deleteContactsView);
+
+        alertDialogBuilder
+                .setCancelable(false)
+                .setPositiveButton("Delete",
+                        new DialogInterface.OnClickListener()
+                        {
+                            public void onClick(DialogInterface dialog,int id)
+                            {
+                                dbHandler.deleteContact(ContactID);
+                                makeContactsTable();
+                            }
+
+                        })
+                //On cancel, close and go back to the SettingsActivity page
+                .setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener()
+                        {
+                            public void onClick(DialogInterface dialog,int id)
+                            {
+                                dialog.cancel();
+                            }
+                        });
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+
     }
 }

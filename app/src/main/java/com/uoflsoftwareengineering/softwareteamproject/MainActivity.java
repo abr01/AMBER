@@ -103,8 +103,13 @@ public class MainActivity extends AppCompatActivity implements LocationListener
         setContentView(R.layout.activity_main);
 
         //Initialize the necessary location components
+
+        //Gets the last known location sent from this phone, prevents null value.
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,this);
+        Location l = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        latitude = l.getLatitude();
+        longitude = l.getLongitude();
 
         //####Should rename this button will come back to it
         btnSendSMS = (Button) findViewById(R.id.btnSendSMS);
@@ -139,8 +144,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener
         //If the user clicks "End Emergency Messaging", end the emergency messaging
         else
         {
-            btnSendSMS.setBackgroundResource(R.drawable.emergencybuttonend_rounded_corners);
             btnSendSMS.setText("End Emergency Messaging");
+            btnSendSMS.setBackgroundResource(R.drawable.emergencybuttonend_rounded_corners);
             resume();
         }
 
@@ -224,6 +229,29 @@ public class MainActivity extends AppCompatActivity implements LocationListener
         alertDialog.show();
     }
 
+    //On location change, set the latitude and longitude variables
+    @Override
+    public void onLocationChanged(Location location) {
+        latitude = location.getLatitude();
+        longitude = location.getLongitude();
+    }
+
+    //These function were required to be added because of the location service otherwise the program would not run
+    @Override
+    public void onProviderDisabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
     public void checkPassword()
     {
         LayoutInflater li;
@@ -288,6 +316,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener
         String phoneNo;
         String message;
         contactCursor.moveToFirst();
+
             while (!contactCursor.isAfterLast())
             {
                 if (contactCursor.getString(contactCursor.getColumnIndex("_Name")) != null) {
@@ -396,28 +425,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener
         sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);
     }
 
-    //On location change, set the latitude and longitude variables
-    @Override
-    public void onLocationChanged(Location location) {
-        latitude = location.getLatitude();
-        longitude = location.getLongitude();
-    }
 
-    //These function were required to be added because of the location service otherwise the program would not run
-    @Override
-    public void onProviderDisabled(String provider) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
 }
 
 
