@@ -6,12 +6,10 @@ import android.database.Cursor;
 import android.content.Context;
 import android.content.ContentValues;
 
-import com.uoflsoftwareengineering.softwareteamproject.Contacts;
-
 /**
  * Created by Tylor on 9/30/2016.
  */
-public class ContactsDBHandler extends SQLiteOpenHelper {
+public class DBHandler extends SQLiteOpenHelper {
 
 
     public static final int DATABASE_VERSION = 1;
@@ -28,7 +26,7 @@ public class ContactsDBHandler extends SQLiteOpenHelper {
     public static final String COLUMN_ISINDANGER = "_IsInDanger";
     public static final String TABLE_USERSTATUS = "UserStatus";
 
-    public ContactsDBHandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+    public DBHandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, DATABASE_NAME, factory, DATABASE_VERSION);
     }
 
@@ -101,16 +99,21 @@ public class ContactsDBHandler extends SQLiteOpenHelper {
     //Delete a product from the database
     public void deleteContact(int ContactID)
     {
+        String WhereClause = "_ID = " +  Integer.toString(ContactID);
         SQLiteDatabase db = getWritableDatabase();
-        db.execSQL("DELETE FROM Contacts where _ID = " + Integer.toString(ContactID));
+        db.delete(TABLE_CONTACTS, WhereClause, null);
+        //db.execSQL("DELETE FROM Contacts where _ID = " + Integer.toString(ContactID));
     }
 
     //Get the table Contacts and return the table in a Curosr variable
     public Cursor getContactCursor()
     {
         SQLiteDatabase db = getWritableDatabase();
-        String query = "SELECT * FROM " + TABLE_CONTACTS + ";";
-
+        String query = "SELECT " + COLUMN_ID + ", "
+                                 + COLUMN_CONTACTNAME + ", "
+                                 + COLUMN_CONTACTPHONENUMBER + " FROM "
+                                 + TABLE_CONTACTS + ";";
+        //String query = "SELECT * FROM " + TABLE_CONTACTS + ";";
         //Cursor points to a location in your results
         Cursor contactCursor= db.rawQuery(query, null);
         return contactCursor;
@@ -133,7 +136,8 @@ public class ContactsDBHandler extends SQLiteOpenHelper {
     public boolean isPasswordSet()
     {
         SQLiteDatabase db = getWritableDatabase();
-        String query = "SELECT * FROM " + TABLE_PASSWORD + ";";
+        String query = "SELECT " + COLUMN_PASSWORD + " FROM " + TABLE_PASSWORD + ";";
+        //String query = "SELECT _Password FROM " + TABLE_PASSWORD + ";";
 
         //Cursor points to a location in your results
         Cursor passwordCursor= db.rawQuery(query, null);
@@ -153,11 +157,11 @@ public class ContactsDBHandler extends SQLiteOpenHelper {
     {
         String password;
         SQLiteDatabase db = getWritableDatabase();
-        String query = "SELECT _Password FROM " + TABLE_PASSWORD + ";";
+        String query = "SELECT " + COLUMN_PASSWORD + " FROM " + TABLE_PASSWORD + ";";
         Cursor passwordCursor = db.rawQuery(query, null);
 
         passwordCursor.moveToFirst();
-        password = passwordCursor.getString(passwordCursor.getColumnIndex("_Password"));
+        password = passwordCursor.getString(passwordCursor.getColumnIndex(COLUMN_PASSWORD));
 
         return password;
     }
@@ -166,11 +170,13 @@ public class ContactsDBHandler extends SQLiteOpenHelper {
     {
         int isIndanger;
         SQLiteDatabase db = getWritableDatabase();
-        String query = "SELECT _IsInDanger FROM UserStatus";
+        String query = "SELECT " + COLUMN_ISINDANGER + " FROM " + TABLE_USERSTATUS + ";";
+        //String query = "SELECT _IsInDanger FROM UserStatus";
         Cursor userStatusCursor = db.rawQuery(query, null);
 
         userStatusCursor.moveToFirst();
-        isIndanger = userStatusCursor.getInt(userStatusCursor.getColumnIndex("_IsInDanger"));
+        isIndanger = userStatusCursor.getInt(userStatusCursor.getColumnIndex(COLUMN_ISINDANGER));
+        //isIndanger = userStatusCursor.getInt(userStatusCursor.getColumnIndex("_IsInDanger"));
 
         return isIndanger;
     }
@@ -188,9 +194,9 @@ public class ContactsDBHandler extends SQLiteOpenHelper {
         }
 
         SQLiteDatabase db = getWritableDatabase();
-        String query = "UPDATE UserStatus ";
-        query += "SET _IsInDanger = " + currentStatus;
-
+        //String query = "UPDATE UserStatus ";
+        //query += "SET _IsInDanger = " + currentStatus;
+        String query = "UPDATE " + TABLE_USERSTATUS + " SET " + COLUMN_ISINDANGER + " = " + currentStatus;
         db.execSQL(query);
     }
 

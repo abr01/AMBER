@@ -28,10 +28,6 @@ import java.util.TimerTask;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-//These are not used libraries, can we get rid of them?
-import android.graphics.Point;
-import android.view.MenuInflater;
-import android.support.v7.widget.PopupMenu;
 
 
 public class MainActivity extends AppCompatActivity implements LocationListener
@@ -48,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener
     //dbHandler will be used to make calls to the database
     //contactCursor wiil be used to iterate through the list of contacts dbHandler returns
     //If there are no contacts aka rowCount = 0, the emergency button will gray out and disable
-    ContactsDBHandler contactDBHandler;
+    DBHandler contactDBHandler;
     Cursor contactCursor;
 
     boolean isPasswordSet;
@@ -87,11 +83,15 @@ public class MainActivity extends AppCompatActivity implements LocationListener
             case R.id.control:
                 return true;
             case R.id.addContact:
+                if(contactDBHandler.isInDanger() == 1)
+                {
+                    return true;
+                }
                 Intent myIntent = new Intent(MainActivity.this,SettingsActivity.class);
                 MainActivity.this.startActivity(myIntent);
                 return true;
-            case R.id.about:
-                return true;
+            //case R.id.about:
+            //   return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -115,8 +115,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener
         btnSendSMS = (Button) findViewById(R.id.btnSendSMS);
        // btnContacts = (Button) findViewById(R.id.btnContacts);
 
-        //dbHandler creates an instance of the object ContactsDBHandler
-        contactDBHandler = new ContactsDBHandler(this,null,null,1);
+        //dbHandler creates an instance of the object DBHandler
+        contactDBHandler = new DBHandler(this,null,null,1);
         //dbHandler.getContactCursor gets all of the contacts stored within a database
         contactCursor = contactDBHandler.getContactCursor();
         //contactCursor.moveToFirst();
@@ -343,13 +343,15 @@ public class MainActivity extends AppCompatActivity implements LocationListener
     //This function will run the prepareMessage method every minute when called
     public void resume()
     {
-        this.msgTask = new TimerTask() {
-        @Override
-        public void run()
+        this.msgTask = new TimerTask()
         {
-            prepareMessage();
-        }
-    };
+            @Override
+            public void run()
+            {
+                prepareMessage();
+            }
+        };
+
         this.msgTimer= new Timer();
         this.msgTimer.scheduleAtFixedRate(msgTask, 0, 60000 );
     }
@@ -424,8 +426,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener
         SmsManager sms = SmsManager.getDefault();
         sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);
     }
-
-
 }
 
 

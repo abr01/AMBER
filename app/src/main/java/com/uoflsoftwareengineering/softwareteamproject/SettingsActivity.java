@@ -1,7 +1,5 @@
 package com.uoflsoftwareengineering.softwareteamproject;
 
-
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -11,7 +9,6 @@ import android.os.Bundle;
 import android.support.v7.internal.widget.AdapterViewCompat;
 import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.view.ContextMenu;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,14 +16,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.support.v7.app.AppCompatActivity;
-
-import java.util.List;
 
 import static android.R.drawable.ic_delete;
 import static android.R.drawable.ic_menu_edit;
@@ -38,17 +31,13 @@ import static android.R.drawable.ic_menu_edit;
 public class SettingsActivity extends AppCompatActivity {
 
     private final Context context = this;
-    //private TextView txtContactList;
-    private ContactsDBHandler dbHandler;
-    //private EditText ContactName;
-    //private EditText ContactPhoneNumber;
+    private DBHandler dbHandler;
     private String Name;
     private String Number;
     private Contacts contact;
 
-    ContactsDBHandler contactDBHandler;
+    DBHandler contactDBHandler;
     Cursor contactCursor;
-
 
     //ALEX'S CODE
     @Override
@@ -88,8 +77,8 @@ public class SettingsActivity extends AppCompatActivity {
         ImageButton btnBack= (ImageButton) findViewById(R.id.imgBtnBack);
         ImageButton btnAddContact = (ImageButton) findViewById(R.id.imgBtnAddContact);
 
-        //Create ContactsDBHandler Object to use and display all of the contacts already stored in the database if any
-        dbHandler = new ContactsDBHandler(this,null,null,1);
+        //Create DBHandler Object to use and display all of the contacts already stored in the database if any
+        dbHandler = new DBHandler(this,null,null,1);
 
         makeContactsTable();
 
@@ -196,7 +185,7 @@ public class SettingsActivity extends AppCompatActivity {
         tRow.addView(column1);
         tRow.addView(column2);
 
-        contactDBHandler = new ContactsDBHandler(this, null, null, 1);
+        contactDBHandler = new DBHandler(this, null, null, 1);
         //dbHandler.getContactCursor gets all of the contacts stored within a database
         contactCursor = contactDBHandler.getContactCursor();
         contactCursor.moveToFirst();
