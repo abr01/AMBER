@@ -82,8 +82,6 @@ public class SettingsActivity extends AppCompatActivity {
 
         makeContactsTable();
 
-
-
         //Click  to go back to the MainActivity page
         btnBack.setOnClickListener(new View.OnClickListener(){
 
