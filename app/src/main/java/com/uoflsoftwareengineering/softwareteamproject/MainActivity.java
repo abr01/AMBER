@@ -85,11 +85,17 @@ public class MainActivity extends AppCompatActivity implements LocationListener
             case R.id.addContact:
                 if(contactDBHandler.isInDanger() == 1)
                 {
+                    manageContactsError();
                     return true;
                 }
-                Intent myIntent = new Intent(MainActivity.this,SettingsActivity.class);
-                MainActivity.this.startActivity(myIntent);
-                return true;
+
+                else
+                {
+                    //Intent myIntent = new Intent(MainActivity.this,SettingsActivity.class);
+                    //MainActivity.this.startActivity(myIntent);
+                    checkPasswordManageContacts();
+                    return true;
+                }
             //case R.id.about:
             //   return true;
             default:
@@ -158,7 +164,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener
                 //If the user clicks "EMERGENCY", notify the user that the message is being relayed
                 if (isInDanger == 1)
                 {
-                    checkPassword();
+                    checkPasswordEmergencyButton();
                 }
                 //If the user clicks "End Emergency Messaging", end the emergency messaging
                 else
@@ -251,8 +257,34 @@ public class MainActivity extends AppCompatActivity implements LocationListener
     public void onStatusChanged(String provider, int status, Bundle extras) {
 
     }
+    public void manageContactsError()
+    {
+        LayoutInflater li;
+        View emergencyIsActiveView;
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
 
-    public void checkPassword()
+        li = LayoutInflater.from(context);
+        emergencyIsActiveView = li.inflate(R.layout.activity_managecontactserror, null);
+
+        alertDialogBuilder.setView(emergencyIsActiveView);
+
+        alertDialogBuilder
+                .setCancelable(false)
+                .setPositiveButton("OK",
+                        new DialogInterface.OnClickListener()
+                        {
+                            public void onClick(DialogInterface dialog,int id)
+                            {
+
+                            }
+
+                        });
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+
+    }
+    public void checkPasswordEmergencyButton()
     {
         LayoutInflater li;
         View confirmPasswordView;
@@ -308,6 +340,61 @@ public class MainActivity extends AppCompatActivity implements LocationListener
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
     }
+
+    public void checkPasswordManageContacts()
+    {
+        LayoutInflater li;
+        View confirmPasswordView;
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+
+        li = LayoutInflater.from(context);
+        confirmPasswordView= li.inflate(R.layout.activity_confirmpassword, null);
+
+        //Set a view to display to add a contact
+        alertDialogBuilder.setView(confirmPasswordView);
+        final EditText passwordConfirmation = (EditText) confirmPasswordView.findViewById(R.id.passwordConfirmation);
+
+        alertDialogBuilder
+                .setCancelable(false)
+                .setPositiveButton("Confirm Password",
+                        new DialogInterface.OnClickListener()
+                        {
+                            public void onClick(DialogInterface dialog,int id)
+                            {
+                                //ContactName = (EditText) findViewById(R.id.contactAddName);
+                                //ContactPhoneNumber = (EditText) findViewById(R.id.contactAddPhoneNumber);
+                                passwordCheck = passwordConfirmation.getText().toString();
+                                storedPassword = contactDBHandler.getPassword();
+                                //If there is valid input add the contact otherwise notify it wasn't valid and to try again
+                                if(passwordCheck.equals(storedPassword))
+                                {
+                                    Intent myIntent = new Intent(MainActivity.this,SettingsActivity.class);
+                                    MainActivity.this.startActivity(myIntent);
+                                }
+
+                                else
+                                {
+                                    new AlertDialog.Builder(context)
+                                            .setTitle("Invalid Password")
+                                            .setMessage("The password you entered was invalid.")
+                                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener()
+                                            {
+                                                public void onClick(DialogInterface dialog, int which)
+                                                {
+
+                                                }
+                                            })
+                                            .setIcon(android.R.drawable.ic_dialog_alert)
+                                            .show();
+                                }
+                            }
+
+                        });
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
+
 
     //This iterates through each of the contacts making sure that each user gets
     //a gps location of the person in danger
@@ -426,6 +513,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener
         SmsManager sms = SmsManager.getDefault();
         sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);
     }
+
 }
 
 
