@@ -316,6 +316,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener
                                     btnSendSMS.setText("EMERGENCY");
                                     btnSendSMS.setBackgroundResource(R.drawable.emergencybutton_rounded_corners);
                                     pause();
+
+                                    prepareSafeMessage();
                                 }
 
                                 else
@@ -398,7 +400,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener
 
     //This iterates through each of the contacts making sure that each user gets
     //a gps location of the person in danger
-    public void prepareMessage()
+    public void prepareEmergencyMessage()
     {
         String phoneNo;
         String message;
@@ -409,8 +411,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener
                 if (contactCursor.getString(contactCursor.getColumnIndex("_Name")) != null) {
                     message = contactCursor.getString(contactCursor.getColumnIndex("_Name"));
                     message += " I am in danger come find me http://maps.google.com/?q="
-                            + String.valueOf(latitude) + "," + String.valueOf(longitude)
-                            + " this is a test of the AMBER alert system";
+                            + String.valueOf(latitude) + "," + String.valueOf(longitude);
+
 
                     phoneNo = contactCursor.getString(contactCursor.getColumnIndex("_PhoneNumber"));
 
@@ -427,6 +429,35 @@ public class MainActivity extends AppCompatActivity implements LocationListener
             }
     }
 
+    public void prepareSafeMessage()
+    {
+        String phoneNo;
+        String message;
+        contactCursor.moveToFirst();
+
+        while (!contactCursor.isAfterLast())
+        {
+            if (contactCursor.getString(contactCursor.getColumnIndex("_Name")) != null) {
+                message = contactCursor.getString(contactCursor.getColumnIndex("_Name"));
+                message += " I am safe now. Emergency messaging ending";
+
+
+                phoneNo = contactCursor.getString(contactCursor.getColumnIndex("_PhoneNumber"));
+
+                //If it's valid, send message
+                if (phoneNo.length() > 0 && message.length() > 0) {
+                    sendSMS(phoneNo, message);
+                } else {
+                    Toast.makeText(getBaseContext(),
+                            "Invalid Phone Number or Message",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+            contactCursor.moveToNext();
+        }
+    }
+
+
     //This function will run the prepareMessage method every minute when called
     public void resume()
     {
@@ -435,7 +466,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener
             @Override
             public void run()
             {
-                prepareMessage();
+                prepareEmergencyMessage();
             }
         };
 
