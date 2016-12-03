@@ -439,7 +439,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener
         {
             if (contactCursor.getString(contactCursor.getColumnIndex("_Name")) != null) {
                 message = contactCursor.getString(contactCursor.getColumnIndex("_Name"));
-                message += " I am safe now. Emergency messaging ending";
+                message += " I am safe now. Emergency messaging ended";
 
 
                 phoneNo = contactCursor.getString(contactCursor.getColumnIndex("_PhoneNumber"));
